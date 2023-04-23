@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <!-- Locate -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8">
+    </script>
 </head>
 
 <body style="margin: 0;padding: 0;">
@@ -17,6 +21,11 @@
         var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
         }).addTo(newMap);
+        var World_Imagery = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+        L.control.locate().addTo(newMap);
         // loading GeoJSON file - Here my html and usa_adm.geojson file resides in same folder
         // var datalayer = L.geoJson(pk12).bindPopup(function(layer) {
         //     return layer.feature.properties.Id
@@ -29,7 +38,8 @@
         }).addTo(newMap);
         newMap.fitBounds(datalayer.getBounds());
         var baseMaps = {
-            "OpenStreetMap": osm
+            "OpenStreetMap": osm,
+            "World_Imagery": World_Imagery,
         };
         var overlayMaps = {
             "PK12": datalayer
