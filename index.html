@@ -5,24 +5,58 @@
     <title>Map App</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <!-- Locate -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8">
     </script>
+    
+    <script>
+        function tabPopup(tab, border) {
+            var table = "<table border='2' id='tabPopup'>";
+            var cpt = 0;
+            tab.forEach(element => {
+                if (cpt % 2 == 0) {
+                    table += "<tr><th>" + element + "</th>";
+                } else {
+                    table += "<td>" + element + "</td></tr>";
+                }
+                cpt += 1;
+            });
+            table += "</table>";
+            return table;
+        }
+    </script>
 </head>
 
 <body style="margin: 0;padding: 0;">
+    <style>
+        #tabPopup {
+            text-align: center;
+            border: 2px solid black;
+        }
+
+        #tabPopup th {
+            padding: 3px 6px;
+            color: blue;
+        }
+
+        #tabPopup td {
+            padding: 3px 6px;
+        }
+    </style>
     <div id="map" style="width: 100%; height: 100vh;"></div>
-    <script src="pk12.geojson"></script>
+    <script src="pk12_xy.geojson"></script>
     <script>
         var newMap = L.map('map').setView([11, 43], 13);
         var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
         }).addTo(newMap);
         var World_Imagery = L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
         L.control.locate().addTo(newMap);
@@ -32,8 +66,12 @@
         // }).addTo(newMap);
         // add GeoJSON layer to the map once the file is loaded
         var datalayer = L.geoJson(pk12, {
-            onEachFeature: function(feature, featureLayer) {
-                featureLayer.bindPopup("" + feature.properties.Id);
+            onEachFeature: function (feature, featureLayer) {
+                featureLayer.bindPopup(tabPopup([
+                    'id :', feature.properties.Id,
+                    'Longitude :', feature.properties.x,
+                    'Latitude :', feature.properties.y,
+                ]) );
             }
         }).addTo(newMap);
         newMap.fitBounds(datalayer.getBounds());
