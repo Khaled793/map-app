@@ -68,7 +68,7 @@
         var datalayer = L.geoJson(pk12, {
             onEachFeature: function (feature, featureLayer) {
                 featureLayer.bindPopup(tabPopup([
-                    'id :', feature.properties.Id,
+                    'Id parcelle:', feature.properties.Id,
                     'Longitude :', feature.properties.x,
                     'Latitude :', feature.properties.y,
                 ]) );
